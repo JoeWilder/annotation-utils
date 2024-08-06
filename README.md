@@ -10,7 +10,7 @@ Annotation Handler is a lightweight Python package designed to streamline image 
 
 ## Installing
 
-For now, just clone the project and install any dependencies that re needed
+For now, just clone the project and install any dependencies that are needed
 
 ```
 git clone https://github.com/JoeWilder/AnnotationHandler.git
