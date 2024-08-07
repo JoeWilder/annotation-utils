@@ -40,3 +40,15 @@ annotation_handler.display_coco()
 
 # Display sample will display whatever format you last used
 annotation_handler.display_sample()
+
+
+# Load annotations from existing files
+annotation_handler = AnnotationHandler()
+annotation_handler.from_coco(r"..\example_data\coco-annotations.json")
+annotation_handler.display_base()
+
+# Loading YOLO files requires the creation of a classes.txt file, where each line is a label
+# For our example data, create classes.txt in the example_data directory and add the following on line 1: "coral"
+annotation_handler = AnnotationHandler()
+annotation_handler.from_yolo(r"..\example_data")
+annotation_handler.display_base()

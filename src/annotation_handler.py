@@ -10,9 +10,10 @@ from random import randint
 class AnnotationHandler:
     """Used to manipulate a list of annotations into a more useable format"""
 
-    def __init__(self, mask_list: list[str, str, np.ndarray[bool]]):
+    def __init__(self, mask_list: list[str, str, np.ndarray[bool]] = None):
         self._format = self.Format.MASK
-        self._annotation_list: list[ImageAnnotation] = self._populate_annotation_list(mask_list)
+        if mask_list is not None:
+            self._annotation_list: list[ImageAnnotation] = self._populate_annotation_list(mask_list)
         self._converted_annotations = None
 
     class Format(Enum):
@@ -175,6 +176,43 @@ class AnnotationHandler:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+    def from_coco(self, coco_path: str):
+        f = open(coco_path)
+        coco_data = json.load(f)
+        mask_list: list[str, str, np.ndarray[bool]] = []
+
+        image_map = {}
+        for image_data in coco_data["images"]:
+            image_id = image_data["id"]
+            if image_id not in image_map.keys():
+                im = cv2.imread(image_data["file_name"])
+                image_height, image_width, _ = im.shape
+                image_map[image_data["id"]] = (image_data["file_name"], (image_height, image_width))
+
+        category_map = {}
+        for category_data in coco_data["categories"]:
+            category_id = category_data["id"]
+            if category_id not in category_map.keys():
+                category_map[category_data["id"]] = category_data["name"]
+
+        for annotation in coco_data["annotations"]:
+            path, size = image_map.get(annotation["image_id"])
+            label = category_map.get(annotation["category_id"])
+
+            height, width = size
+            mask = np.zeros((height, width), dtype=np.uint8)
+
+            for segmentation in annotation["segmentation"]:
+                poly = np.array(segmentation).reshape((-1, 2)).astype(np.int32)
+                cv2.fillPoly(mask, [poly], 1)
+
+            mask = mask.astype(bool)
+
+            entry = [path, label, mask]
+            mask_list.append(entry)
+
+        self._annotation_list = self._populate_annotation_list(mask_list)
+
     def convert_yolo(self):
 
         annotations = []
@@ -262,6 +300,64 @@ class AnnotationHandler:
         cv2.imshow("YOLO Annotation", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    def from_yolo(self, yolo_path: str):
+
+        class_path = os.path.join(yolo_path, "classes.txt")
+
+        if not os.path.isfile(class_path):
+            raise FileNotFoundError(
+                f"No YOLO classes.txt file found. Please create a classes.txt file that contains one label per line for each annotation class in the following location: {yolo_path}"
+            )
+
+        category_map = {}
+        with open(class_path) as file:
+            i = 0
+            for line in file:
+                category_map[i] = line
+
+        mask_list = []
+
+        for file in os.listdir(yolo_path):
+            file_ext = os.path.splitext(file)[1]
+            if file_ext != ".txt":
+                continue
+
+            if file == "classes.txt":
+                continue
+
+            base_name = os.path.splitext(file)[0]
+
+            with open(os.path.join(yolo_path, file), "r") as file:
+                for line in file:
+                    for file in os.listdir(yolo_path):
+                        split = os.path.splitext(file)
+                        if split[1] == ".txt":
+                            continue
+                        if split[0] != base_name:
+                            continue
+
+                        path = os.path.join(yolo_path, file)
+                    class_id, *poly = line.split(" ")
+                    label = category_map.get(int(class_id))
+
+                    img = cv2.imread(path)
+                    h, w = img.shape[:2]
+
+                    poly = np.asarray(poly, dtype=np.float16).reshape(-1, 2)
+                    poly *= [w, h]
+
+                    mask = np.zeros((h, w), dtype=np.uint8)
+
+                    poly = np.array(poly).reshape((-1, 2)).astype(np.int32)
+                    cv2.fillPoly(mask, [poly], 1)
+
+                    mask = mask.astype(bool)
+
+                    entry = [path, label, mask]
+                    mask_list.append(entry)
+
+        self._annotation_list = self._populate_annotation_list(mask_list)
 
     def display_sample(self):
         if self._format is self.Format.COCO:
