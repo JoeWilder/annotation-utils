@@ -1,0 +1,21 @@
+[project]
+name = "AnnotationUtils"
+version = "1.0"
+description = "provides easy ways to manipulate image annotations"
+readme = "README.md"
+authors = [{ name = "" }]
+license = { text = "MIT" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["AnnotationUtils"]
+include-package-data = true

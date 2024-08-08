@@ -1,9 +1,13 @@
+import os
+
+print(os.getcwd())
+
 import numpy as np
 import os
 import cv2
 from enum import Enum
 import json
-from annotation import ImageAnnotation
+from .annotation import ImageAnnotation
 from random import randint
 
 
