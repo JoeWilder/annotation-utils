@@ -10,8 +10,12 @@ Annotation Utils is a lightweight Python package designed to streamline image an
 
 ## Installing
 
-For now, just clone the project and install any dependencies that are needed
+To use AnnotationUtils in your project, run the following command:
+```bash
+pip install git+https://github.com/JoeWilder/AnnotationUtils.git
+```
 
+To run the project locally, clone it
 ```bash
 git clone https://github.com/JoeWilder/AnnotationUtils.git
 ```
@@ -29,6 +33,8 @@ Here are some examples of instantiating an AnnotationHandler
 The following section will go over how to load annotation data into the project. This will convert the data into a boolean mask, which can then be converted into any other available format
 #### Load from numpy arrays (np array must match image dimensions and have boolean dtype) 
 ```python
+from AnnotationUtils import AnnotationHandler
+
 annotation_list = []
 mask1 = np.load(r"..\example_data\coral_mask1.npy")
 mask2 = np.load(r"..\example_data\coral_mask2.npy")
