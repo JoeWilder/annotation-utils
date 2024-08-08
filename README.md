@@ -1,8 +1,8 @@
-![Title](assets/annotation-handler.png?raw=true)
+![Title](assets/annotation-utils.png?raw=true)
 
 ## Introduction
 
-Annotation Handler is a lightweight Python package designed to streamline image annotation workflows by offering a universal annotation format and various utility functions. It allows you to easily convert labeled boolean masks into popular formats such as COCO and YOLOSEG, as well as append annotations and display annotations.
+Annotation Utils is a lightweight Python package designed to streamline image annotation workflows by offering a universal annotation format and various utility functions. It allows you to easily convert labeled boolean masks into popular formats such as COCO and YOLOSEG, as well as append annotations and display annotations.
 
 <p align="center">
   <img src="assets/combined-image.png" alt="functionality preview"/>
@@ -13,7 +13,7 @@ Annotation Handler is a lightweight Python package designed to streamline image 
 For now, just clone the project and install any dependencies that are needed
 
 ```bash
-git clone https://github.com/JoeWilder/AnnotationHandler.git
+git clone https://github.com/JoeWilder/AnnotationUtils.git
 ```
 
 
@@ -38,21 +38,21 @@ annotation_list.append([r"..\example_data\coral.png", "coral", mask1])
 annotation_list.append([r"..\example_data\coral.png", "coral", mask2])
 annotation_list.append([r"..\example_data\coral.png", "coral", mask3])
 
-annotation_handler = AnnotationHandler(annotation_list)
+annotation_utils = AnnotationHandler(annotation_list)
 ```
 
 #### Load from COCO json file
 ```python
-annotation_handler = AnnotationHandler()
-annotation_handler.from_coco(r"..\example_data\coco-annotations.json")
-annotation_handler.display_base()
+annotation_utils = AnnotationHandler()
+annotation_utils.from_coco(r"..\example_data\coco-annotations.json")
+annotation_utils.display_base()
 ```
 
 #### Load from YOLO-SEG txt files
 ```python
-annotation_handler = AnnotationHandler()
-annotation_handler.from_yolo(r"..\example_data")
-annotation_handler.display_base()
+annotation_utils = AnnotationHandler()
+annotation_utils.from_yolo(r"..\example_data")
+annotation_utils.display_base()
 ```
 
 ### Utility Functions
@@ -61,15 +61,15 @@ Once we have loaded our data, we can convert to any format that we need. We can 
 
 #### Convert and write to disk
 ```python
-annotation_handler.write_coco(r"..\example_data\coco-annotations.json")
-annotation_handler.write_yolo(r"..\example_data")
+annotation_utils.write_coco(r"..\example_data\coco-annotations.json")
+annotation_utils.write_yolo(r"..\example_data")
 ```
 
 #### Display annotations
 ```python
-annotation_handler.display_base() # Unversal boolean mask format
-annotation_handler.display_coco() # Convert to coco if needed, and display
-annotation_handler.display_yolo() # Convert to yolo if needed, and display
+annotation_utils.display_base() # Unversal boolean mask format
+annotation_utils.display_coco() # Convert to coco if needed, and display
+annotation_utils.display_yolo() # Convert to yolo if needed, and display
 ```
 
 
@@ -82,9 +82,11 @@ python main.py
 
 
 ## Version History
-* 0.2 (8/8/2024)
+* 1.0.0 (8/8/2024)
+    * Project package
+* 0.2 (8/7/2024)
     * Load annotations from file
-* 0.1 (8/7/2024)
+* 0.1 (8/6/2024)
     * Initial Release
 
 ## License
