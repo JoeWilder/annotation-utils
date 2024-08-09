@@ -3,7 +3,7 @@ name = "annotation-utils"
 version = "1.0"
 description = "provides easy ways to manipulate image annotations"
 readme = "README.md"
-authors = [{ name = "" }]
+authors = [{ name = "Joe Wilder" }]
 license = { text = "MIT" }
 requires-python = ">=3.7"
 classifiers = [
