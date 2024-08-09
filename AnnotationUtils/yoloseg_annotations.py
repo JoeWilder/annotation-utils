@@ -1,9 +1,10 @@
 import numpy as np
 import cv2
-from .base_annotations import BaseAnnotations
-from typing import List, Tuple
 from random import randint
 import os
+from typing import List, Tuple
+
+from .base_annotations import BaseAnnotations
 
 
 class YolosegAnnotations(BaseAnnotations):
