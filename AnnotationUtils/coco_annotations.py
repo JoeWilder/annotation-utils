@@ -12,6 +12,10 @@ class CocoAnnotations(BaseAnnotations):
         super().__init__(annotatation_data)
         self._raw_ann_data = annotatation_data
 
+    @staticmethod
+    def default_path() -> str:
+        return "coco-annotations.json"
+
     def convert(self):
         coco_dict = {
             "info": {"description": "", "version": "", "year": "", "contributor": "", "date_created": ""},
