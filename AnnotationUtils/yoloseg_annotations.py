@@ -6,10 +6,15 @@ from random import randint
 import os
 
 
-class YoloAnnotations(BaseAnnotations):
+class YolosegAnnotations(BaseAnnotations):
     def __init__(self, annotatation_data: List[Tuple[str, str, np.ndarray[np.ndarray[bool]]]]):
         super().__init__(annotatation_data)
         self._raw_ann_data = annotatation_data
+        self.default_path = os.getcwd()
+
+    @staticmethod
+    def default_path() -> str:
+        return os.getcwd()
 
     def convert(self):
         annotations = []
@@ -66,28 +71,32 @@ class YoloAnnotations(BaseAnnotations):
 
         mask_list = []
 
-        for file in os.listdir(data_path):
-            file_ext = os.path.splitext(file)[1]
+        for annotation_file in os.listdir(data_path):
+            file_ext = os.path.splitext(annotation_file)[1]
             if file_ext != ".txt":
                 continue
 
-            if file == "classes.txt":
+            if annotation_file == "classes.txt":
                 continue
 
-            base_name = os.path.splitext(file)[0]
+            base_name = os.path.splitext(annotation_file)[0]
 
-            with open(os.path.join(data_path, file), "r") as file:
+            with open(os.path.join(data_path, annotation_file), "r") as file:
                 for line in file:
-                    for file in os.listdir(data_path):
-                        split = os.path.splitext(file)
+                    path = None
+                    for image_file in os.listdir(data_path):
+                        split = os.path.splitext(image_file)
                         if split[1] == ".txt":
                             continue
                         if split[0] != base_name:
                             continue
 
-                        path = os.path.join(data_path, file)
+                        path = os.path.join(data_path, image_file)
                     class_id, *poly = line.split(" ")
                     label = category_map.get(int(class_id))
+
+                    if path is None:
+                        raise FileNotFoundError(f"Could not find image '{annotation_file.replace(".txt", "")}' in {data_path}")
 
                     img = cv2.imread(path)
                     h, w = img.shape[:2]

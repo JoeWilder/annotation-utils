@@ -2,13 +2,14 @@ import numpy as np
 from enum import Enum
 from enum import Enum
 from .coco_annotations import CocoAnnotations
-from .yolo_annotations import YoloAnnotations
+from .yoloseg_annotations import YolosegAnnotations
 from typing import List, Tuple
 import cv2
 from random import randint
+import os
 
 
-class AnnotationManager:
+class Annotations:
     """Used to manipulate a list of annotations into a more useable format"""
 
     class Format(Enum):
@@ -22,10 +23,12 @@ class AnnotationManager:
         if format == self.Format.COCO:
             return CocoAnnotations
         elif format == self.Format.YOLOSEG:
-            return YoloAnnotations
+            return YolosegAnnotations
 
-    def load(self, data_path: str, format: Format):
+    def load(self, format: Format, data_path: str | None = None):
         ann_class = self._get_annotation_class(format)
+        if data_path is None:
+            data_path = ann_class.default_path()
         self._raw_ann_data = ann_class.load(data_path)
 
     def add_annotation(self, raw_annotation_data: list[Tuple[str, str, np.ndarray[np.ndarray[bool]]]]):
@@ -39,9 +42,11 @@ class AnnotationManager:
         ann_instance = annotation_class(self._raw_ann_data)
         ann_instance.convert()
 
-    def write(self, format: Format, output_path: str):
-        annotation_class = self._get_annotation_class(format)
-        ann_instance = annotation_class(self._raw_ann_data)
+    def write(self, format: Format, output_path: str | None = None):
+        ann_class = self._get_annotation_class(format)
+        ann_instance = ann_class(self._raw_ann_data)
+        if output_path is None:
+            output_path = ann_class.default_path()
         ann_instance.write(output_path)
 
     def display(self, format: Format | None = None):

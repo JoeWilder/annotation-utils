@@ -33,6 +33,10 @@ class BaseAnnotations:
     def image(self, image: str):
         self._image = image
 
+    @staticmethod
+    def default_path() -> str:
+        raise NotImplementedError("Derived classes must override the 'default_path' method")
+
     def convert(self):
         """Converts from the raw data to the classes specified format"""
         raise NotImplementedError("Derived classes must override the 'convert' method")

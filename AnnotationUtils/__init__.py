@@ -1,4 +1,4 @@
-from .annotation_manager import AnnotationManager
+from .annotations import Annotations
 from .base_annotations import BaseAnnotations
 from .coco_annotations import CocoAnnotations
-from .yolo_annotations import YoloAnnotations
+from .yoloseg_annotations import YolosegAnnotations
