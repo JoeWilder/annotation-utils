@@ -12,7 +12,7 @@ Annotation Utils is a lightweight Python package designed to streamline image an
 
 To use AnnotationUtils in your project, run the following command:
 ```bash
-pip install git+https://github.com/JoeWilder/annotation_utils.git
+pip install git+https://github.com/JoeWilder/annotation-utils.git
 ```
 
 To run the project locally (The only dependencies are numpy and opencv-python)
