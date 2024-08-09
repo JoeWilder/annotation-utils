@@ -15,7 +15,7 @@ To use AnnotationUtils in your project, run the following command:
 pip install git+https://github.com/JoeWilder/annotation-utils.git
 ```
 
-To run the project locally (The only dependencies are numpy and opencv-python)
+To run the project locally (The only dependencies are numpy and opencv-python):
 ```bash
 git clone https://github.com/JoeWilder/AnnotationUtils.git
 cd AnnotationUtils
