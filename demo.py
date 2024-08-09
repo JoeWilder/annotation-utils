@@ -1,4 +1,4 @@
-from AnnotationUtils.annotations import Annotations
+from annotation_utils.annotations import Annotations
 import numpy as np
 
 if __name__ == "__main__":
