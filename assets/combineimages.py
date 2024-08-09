@@ -1,9 +1,10 @@
-import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def display_images_side_by_side(image_paths, titles, output_path):
+    """Generate README asset"""
     images = [cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB) for image_path in image_paths]
 
     height, width, _ = images[0].shape
