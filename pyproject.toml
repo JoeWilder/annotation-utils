@@ -1,5 +1,5 @@
 [project]
-name = "AnnotationUtils"
+name = "annotation-utils"
 version = "1.0"
 description = "provides easy ways to manipulate image annotations"
 readme = "README.md"
@@ -17,5 +17,5 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["AnnotationUtils"]
+packages = ["annotation_utils"]
 include-package-data = true
