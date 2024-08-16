@@ -10,7 +10,6 @@ from .base_annotations import BaseAnnotations
 
 class CocoAnnotations(BaseAnnotations):
     def __init__(self, annotatation_data: List[Tuple[str, str, np.ndarray[np.ndarray[bool]]]]):
-        super().__init__(annotatation_data)
         self._raw_ann_data = annotatation_data
 
     @staticmethod
@@ -32,11 +31,15 @@ class CocoAnnotations(BaseAnnotations):
 
         for image_path, label, annotation_mask in self._raw_ann_data:
 
-            contours, _ = cv2.findContours(annotation_mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            segmentation = []
-            for contour in contours:
-                contour = contour.flatten().tolist()
-                segmentation.append(contour)
+            if annotation_mask is not None:
+                contours, _ = cv2.findContours(annotation_mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                segmentation = []
+                if contours:
+                    largest_contour = max(contours, key=cv2.contourArea)
+                    largest_contour = largest_contour.flatten().tolist()
+                    segmentation.append(largest_contour)
+                else:
+                    continue
 
             if not image_path in image_map.keys():
                 image_id = len(image_map)
@@ -47,30 +50,31 @@ class CocoAnnotations(BaseAnnotations):
             else:
                 image_id = image_map[image_path]
 
-            label = label
-            if not label in category_map.keys():
-                category_id = len(category_map)
-                category_map[label] = len(category_map)
-                coco_dict["categories"].append({"id": category_id, "name": label, "supercategory": "object"})
-            else:
-                category_id = category_map[label]
+            if annotation_mask is not None:
+                label = label
+                if not label in category_map.keys():
+                    category_id = len(category_map)
+                    category_map[label] = len(category_map)
+                    coco_dict["categories"].append({"id": category_id, "name": label, "supercategory": "object"})
+                else:
+                    category_id = category_map[label]
 
-            area = cv2.contourArea(np.array(segmentation).reshape(-1, 2).astype(np.float32))
-            x, y, w, h = cv2.boundingRect(np.array(segmentation).reshape(-1, 2).astype(np.float32))
-            area = float(area)
-            bbox = [float(x), float(y), float(w), float(h)]
-            coco_dict["annotations"].append(
-                {
-                    "id": annotation_id,
-                    "image_id": image_id,
-                    "category_id": category_id,
-                    "segmentation": segmentation,
-                    "area": area,
-                    "bbox": bbox,
-                    "iscrowd": 0,
-                }
-            )
-            annotation_id += 1
+                area = cv2.contourArea(np.array(segmentation).reshape(-1, 2).astype(np.float32))
+                x, y, w, h = cv2.boundingRect(np.array(segmentation).reshape(-1, 2).astype(np.float32))
+                area = float(area)
+                bbox = [float(x), float(y), float(w), float(h)]
+                coco_dict["annotations"].append(
+                    {
+                        "id": annotation_id,
+                        "image_id": image_id,
+                        "category_id": category_id,
+                        "segmentation": segmentation,
+                        "area": area,
+                        "bbox": bbox,
+                        "iscrowd": 0,
+                    }
+                )
+                annotation_id += 1
 
         return coco_dict
 
@@ -112,7 +116,7 @@ class CocoAnnotations(BaseAnnotations):
 
         return mask_list
 
-    def write(self, output_path: str):
+    def write(self, output_path: str, overwrite: bool = False):
         converted_annotations = self.convert()
 
         if os.path.exists(output_path):
